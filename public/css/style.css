@@ -1,0 +1,87 @@
+body {
+  background: linear-gradient(
+    135deg,
+    #f5f7fa,
+    #c3cfe2
+  );
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+
+.main-heading {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #222;
+}
+
+.sub-heading {
+  color: #555;
+  font-size: 1rem;
+}
+
+
+.form-card,
+.expense-card {
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+
+.custom-input {
+  height: 50px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+}
+
+.custom-input:focus {
+  box-shadow: none;
+  border-color: #0d6efd;
+}
+
+
+.add-btn {
+  height: 50px;
+  border-radius: 12px;
+  background: #0d6efd;
+  color: white;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.add-btn:hover {
+  background: #084298;
+  color: white;
+}
+
+
+.expense-title {
+  font-weight: bold;
+  color: #222;
+}
+
+
+.list-group-item {
+  border: none;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 12px !important;
+  /* background: #f8f9fa; */
+background: #cfdbed;
+  transition: 0.3s;
+}
+
+.list-group-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+
+
+.btn-warning {
+  border-radius: 8px;
+}
+
+.btn-danger {
+  border-radius: 8px;
+}
