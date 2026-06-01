@@ -54,6 +54,20 @@ button:hover {
   background: #21433d;
 }
 
+#message {
+  margin-top: 12px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.success {
+  color: green;
+}
+
+.error {
+  color: red;
+}
+
 
 /* Tablet */
 @media (max-width: 768px) {
