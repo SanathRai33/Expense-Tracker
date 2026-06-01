@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Signin</title>
+    <link rel="stylesheet" href="/css/signin.css" />
+  </head>
+
+  <body>
+    <div class="signin-container">
+      <h2>Signin Form</h2>
+
+      <form id="signinForm">
+        <input type="text" placeholder="Name" id="name" required />
+
+        <input type="email" placeholder="Email" id="email" required />
+
+        <input type="password" placeholder="Password" id="password" required />
+
+        <button type="submit">Signin</button>
+
+        <p id="message"></p>
+      </form>
+
+      <p>
+        Already have an account?
+        <a href="/login">Login</a>
+      </p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.16.1/dist/axios.min.js"></script>
+    <script src="/js/script.js"></script>
+  </body>
+</html>
