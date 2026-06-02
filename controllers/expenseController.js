@@ -3,12 +3,14 @@ const Expense = require("../models/expenseModel");
 const addExpense = async (req, res) => {
   try {
     const { amount, description, category, date } = req.body;
+    const userId = req.user.id;
 
     const expense = await Expense.create({
       amount,
       description,
       category,
       date,
+      userId,
     });
 
     res.status(201).json({
@@ -16,13 +18,20 @@ const addExpense = async (req, res) => {
       expense,
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Add Expense Error:", error);
+    res.status(500).json({ 
+      message: error.message,
+      error: error.message 
+    });
   }
 };
 
 const getExpenses = async (req, res) => {
   try {
-    const expenses = await Expense.findAll();
+    const userId = req.user.id;
+    const expenses = await Expense.findAll({
+      where: { userId },
+    });
 
     // if (expenses.length === 0) {
     //   return res.status(404).json({
@@ -36,18 +45,27 @@ const getExpenses = async (req, res) => {
       expenses,
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Get Expenses Error:", error);
+    res.status(500).json({ 
+      message: error.message,
+      error: error.message 
+    });
   }
 };
 
 const deleteExpense = async (req, res) => {
   try {
     const { id } = req.params;
+    const userId = req.user.id;
 
     const expense = await Expense.findByPk(id);
 
     if (!expense) {
       return res.status(404).json({ message: "Expense not found" });
+    }
+
+    if (expense.userId !== userId) {
+      return res.status(403).json({ message: "Not authorized to delete this expense" });
     }
 
     const deletedExpense = await expense.destroy({
@@ -66,12 +84,17 @@ const deleteExpense = async (req, res) => {
 const updateExpense = async (req, res) => {
   try {
     const { id } = req.params;
+    const userId = req.user.id;
     const { amount, description, category } = req.body;
 
     const expense = await Expense.findByPk(id);
 
     if (!expense) {
       return res.status(404).json({ message: "Expense not found" });
+    }
+
+    if (expense.userId !== userId) {
+      return res.status(403).json({ message: "Not authorized to update this expense" });
     }
 
     expense.amount = amount;

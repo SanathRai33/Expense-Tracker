@@ -22,6 +22,14 @@ const Expense = sequelize.define('Expense', {
     date: {
         type: DataTypes.DATEONLY,
         allowNull: false
+    },
+    userId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'Users',
+            key: 'id'
+        }
     }
 })
 

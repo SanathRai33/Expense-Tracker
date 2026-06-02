@@ -1,5 +1,6 @@
 const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
+const generateToken = require("../utils/token-generator");
 
 const signup = async (req, res) => {
   try {
@@ -49,6 +50,8 @@ const login = async (req, res) => {
             });
         }
 
+        const token = generateToken(user);
+
         res.status(200).json({
             message: "Login Successful",
             user: {
@@ -56,6 +59,7 @@ const login = async (req, res) => {
                 name: user.name,
                 email: user.email,
             },
+            token,
         });
     } catch (error) {
         res.status(500).json({

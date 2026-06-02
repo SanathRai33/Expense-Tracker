@@ -16,9 +16,10 @@ const handleSignup = async (e) => {
     message.textContent = response.data.message;
     message.className = "success";
 
-    window.location.href = "/index";
-
-    message.textContent = "";
+    // Redirect to login route after a short delay to show success message
+    setTimeout(() => {
+      window.location.href = "/login";
+    }, 1500);
 
     signinForm.reset();
   } catch (error) {
