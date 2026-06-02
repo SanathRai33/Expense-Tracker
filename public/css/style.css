@@ -82,6 +82,17 @@ body {
   transform: translateY(-2px);
 }
 
+.section-title {
+  text-align: center;
+  margin-top: 32px;
+  color: #333;
+  font-size: 1.8rem;
+  font-weight: 600;
+  background: linear-gradient(90deg, #2c5750, #23463f);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 #expense-list {
   margin-top: 0px;
   display: flex;

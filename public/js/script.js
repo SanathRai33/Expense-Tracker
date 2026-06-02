@@ -12,10 +12,7 @@ const addExpense = async (e) => {
       date: document.getElementById("date").value,
     };
 
-    const response = await axios.post(
-      "/api/expenses",
-      expense
-    );
+    const response = await axios.post('/api/expenses/', expense);
 
     alert(response.data.message);
 
@@ -36,9 +33,7 @@ const addExpense = async (e) => {
 const getExpenses = async () => {
   try {
 
-    const response = await axios.get(
-      "/api/expenses"
-    );
+    const response = await axios.get('/api/expenses/');
 
     const expenses = response.data.expenses;
 
