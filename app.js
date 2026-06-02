@@ -5,6 +5,7 @@ const cors = require("cors");
 const path = require("node:path");
 const sequelize = require("./utils/db-connection");
 const userRoutes = require("./routes/userRoutes");
+const expenseRoutes = require("./routes/expenseRoutes");
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.get("/login", (req, res) => {
 });
 
 app.use("/api/users", userRoutes);
+app.use("/api/expenses", expenseRoutes);
 
 sequelize.sync()
 .then(() => {

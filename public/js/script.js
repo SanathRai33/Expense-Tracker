@@ -1,62 +1,74 @@
-const signinForm = document.getElementById("signinForm");
-const loginForm = document.getElementById("loginForm");
-const message = document.getElementById("message");
+const expenseForm = document.getElementById("expense-form");
+const expenseList = document.getElementById("expense-list");
 
-const handleSignup = async (e) => {
+const addExpense = async (e) => {
   e.preventDefault();
 
   try {
-    const user = {
-      name: document.getElementById("name").value,
-      email: document.getElementById("email").value,
-      password: document.getElementById("password").value,
+    const expense = {
+      amount: document.getElementById("amount").value,
+      description: document.getElementById("description").value,
+      category: document.getElementById("category").value,
+      date: document.getElementById("date").value,
     };
 
-    const response = await axios.post("/api/users/signup", user);
+    const response = await axios.post(
+      "/api/expenses",
+      expense
+    );
 
-    message.textContent = response.data.message;
-    message.className = "success";
+    alert(response.data.message);
 
-    console.log("User signed up:", response.data.user);
+    expenseForm.reset();
 
-    signinForm.reset();
+    getExpenses();
+
   } catch (error) {
-    message.textContent =
-      error.response?.data?.message || "Something went wrong";
+    console.error(error);
 
-    message.className = "error";
+    alert(
+      error.response?.data?.message ||
+      "Failed to add expense"
+    );
   }
 };
 
-const handleLogin = async (e) => {
-  e.preventDefault();
-
+const getExpenses = async () => {
   try {
-    const credentials = {
-      email: document.getElementById("email").value,
-      password: document.getElementById("password").value,
-    };
 
-    const response = await axios.post("/api/users/login", credentials);
+    const response = await axios.get(
+      "/api/expenses"
+    );
 
-    message.textContent = response.data.message;
-    message.className = "success";
+    const expenses = response.data.expenses;
 
-    console.log("User logged in:", response.data.user);
+    expenseList.innerHTML = "";
 
-    loginForm.reset();
+    expenses.forEach((expense) => {
+
+      const li = document.createElement("li");
+
+      li.innerHTML = `
+        <strong>₹${expense.amount}</strong>
+        - ${expense.description}
+        - ${expense.category}
+        - ${expense.date}
+      `;
+
+      expenseList.appendChild(li);
+    });
+
   } catch (error) {
-    message.textContent =
-      error.response?.data?.message || "Something went wrong";
-
-    message.className = "error";
+    console.error(error);
   }
 };
 
-if (signinForm) {
-  signinForm.addEventListener("submit", handleSignup);
-}
+expenseForm.addEventListener(
+  "submit",
+  addExpense
+);
 
-if (loginForm) {
-  loginForm.addEventListener("submit", handleLogin);
-}
+window.addEventListener(
+  "DOMContentLoaded",
+  getExpenses
+);
