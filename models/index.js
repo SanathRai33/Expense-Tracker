@@ -5,6 +5,6 @@ User.hasMany(Expense, { foreignKey: 'userId' });
 Expense.belongsTo(User, { foreignKey: 'userId' });
 
 module.exports = {
-  Expsense,
+  Expense,
   User
 };

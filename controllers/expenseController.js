@@ -1,9 +1,17 @@
 const Expense = require("../models/expenseModel");
+const User = require("../models/userModel");
 
 const addExpense = async (req, res) => {
   try {
     const { amount, description, category, date } = req.body;
     const userId = req.user.id;
+
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found. Please log in again.",
+      });
+    }
 
     const expense = await Expense.create({
       amount,

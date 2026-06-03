@@ -12,7 +12,6 @@ const auth = (req, res, next) => {
     }
 
     let decodedToken = token;
-    // Handle "Bearer token" format if present
     if (token.startsWith("Bearer ")) {
       decodedToken = token.slice(7);
     }
