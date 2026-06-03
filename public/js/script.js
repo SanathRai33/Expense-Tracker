@@ -1,5 +1,7 @@
 const expenseForm = document.getElementById("expense-form");
 const expenseList = document.getElementById("expense-list");
+const showLeaderboardBtn = document.getElementById("show-leaderboard");
+const leaderboardList = document.getElementById("leaderboard-list");
 
 const addExpense = async (e) => {
   e.preventDefault();
@@ -14,15 +16,11 @@ const addExpense = async (e) => {
       date: document.getElementById("date").value,
     };
 
-    const response = await axios.post(
-      "/api/expenses",
-      expense,
-      {
-        headers: {
-          Authorization: token,
-        },
-      }
-    );
+    const response = await axios.post("/api/expenses", expense, {
+      headers: {
+        Authorization: token,
+      },
+    });
 
     alert(response.data.message);
 
@@ -32,10 +30,7 @@ const addExpense = async (e) => {
   } catch (error) {
     console.error(error);
 
-    alert(
-      error.response?.data?.message ||
-      "Failed to add expense"
-    );
+    alert(error.response?.data?.message || "Failed to add expense");
   }
 };
 
@@ -43,14 +38,11 @@ const getExpenses = async () => {
   const token = localStorage.getItem("token");
 
   try {
-    const response = await axios.get(
-      "/api/expenses",
-      {
-        headers: {
-          Authorization: token,
-        },
-      }
-    );
+    const response = await axios.get("/api/expenses", {
+      headers: {
+        Authorization: token,
+      },
+    });
 
     expenseList.innerHTML = "";
 
@@ -69,13 +61,42 @@ const getExpenses = async () => {
   } catch (error) {
     console.error(error);
 
-    alert(
-      error.response?.data?.message ||
-      "Failed to fetch expenses"
-    );
+    alert(error.response?.data?.message || "Failed to fetch expenses");
+  }
+};
+
+const showLeaderboard = async () => {
+  try {
+    const response = await axios.get("/api/leaderboard");
+
+    const data = response.data.leaderboard;
+
+    leaderboardList.innerHTML = "";
+
+    data.forEach((user, index) => {
+      const li = document.createElement("li");
+
+      li.classList.add("leaderboard-item");
+
+      li.innerHTML = `
+    <span class="rank">#${index + 1}</span>
+
+    <div class="leaderboard-info">
+      <span class="name">${user.name}</span>
+      <span class="expense">₹${user.totalExpense || 0}</span>
+    </div>
+  `;
+
+      leaderboardList.appendChild(li);
+    });
+  } catch (error) {
+    console.error(error);
+
+    alert(error.response?.data?.message || "Failed to fetch leaderboard");
   }
 };
 
 expenseForm.addEventListener("submit", addExpense);
+showLeaderboardBtn.addEventListener("click", showLeaderboard);
 
 window.addEventListener("DOMContentLoaded", getExpenses);

@@ -4,10 +4,12 @@ const express = require("express");
 const cors = require("cors");
 const path = require("node:path");
 const sequelize = require("./utils/db-connection");
+
 const userRoutes = require("./routes/userRoutes");
 const expenseRoutes = require("./routes/expenseRoutes");
+const leaderboardRoutes = require("./routes/leaderboardRoutes");
 
-require("./models/expenseModel");
+require("./models");
 
 const app = express();
 
@@ -32,8 +34,9 @@ app.use(express.static("public"));
 
 app.use("/api/users", userRoutes);
 app.use("/api/expenses", expenseRoutes);
+app.use("/api/leaderboard", leaderboardRoutes);
 
-sequelize.sync({force: true})
+sequelize.sync()
 .then(() => {
   app.listen(5000, () => {
     console.log("Server Running on Port 5000");
