@@ -8,6 +8,7 @@ const sequelize = require("./utils/db-connection");
 const userRoutes = require("./routes/userRoutes");
 const expenseRoutes = require("./routes/expenseRoutes");
 const leaderboardRoutes = require("./routes/leaderboardRoutes");
+const aiRoutes = require("./routes/aiRoutes");
 
 require("./models");
 
@@ -33,6 +34,7 @@ app.use(express.static("public"));
 app.use("/api/users", userRoutes);
 app.use("/api/expenses", expenseRoutes);
 app.use("/api/leaderboard", leaderboardRoutes);
+app.use("/api/ai", aiRoutes);
 
 sequelize.sync({ alter: true })
 .then(() => {

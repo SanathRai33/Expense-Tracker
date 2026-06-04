@@ -2,6 +2,9 @@ const expenseForm = document.getElementById("expense-form");
 const expenseList = document.getElementById("expense-list");
 const showLeaderboardBtn = document.getElementById("show-leaderboard");
 const leaderboardList = document.getElementById("leaderboard-list");
+const aiCategoryBtn = document.getElementById("ai-category-btn");
+const descriptionInput = document.getElementById("description");
+const categorySelect = document.getElementById("category");
 
 const addExpense = async (e) => {
   e.preventDefault();
@@ -97,7 +100,37 @@ const showLeaderboard = async () => {
   }
 };
 
+const suggestCategory = async () => {
+  try {
+    const description =
+      descriptionInput.value.trim();
+
+    if (!description) {
+      return alert(
+        "Enter description first"
+      );
+    }
+
+    const response = await axios.post(
+      "/api/ai/categorize",
+      {
+        description,
+      }
+    );
+
+    categorySelect.value =
+      response.data.category;
+  } catch (error) {
+    console.error(error);
+
+    alert(
+      "Failed to get AI suggestion"
+    );
+  }
+};
+
 expenseForm.addEventListener("submit", addExpense);
 showLeaderboardBtn.addEventListener("click", showLeaderboard);
+aiCategoryBtn.addEventListener("click", suggestCategory);
 
 window.addEventListener("DOMContentLoaded", getExpenses);
