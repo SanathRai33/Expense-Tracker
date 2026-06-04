@@ -21,15 +21,20 @@ const addExpense = async (req, res) => {
       userId,
     });
 
+    const totalExpenses = await User.update(
+      { totalExpense: user.totalExpense + parseFloat(amount) },
+      { where: { id: userId } },
+    );
+
     res.status(201).json({
       message: "Expense added successfully",
       expense,
     });
   } catch (error) {
     console.error("Add Expense Error:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       message: error.message,
-      error: error.message 
+      error: error.message,
     });
   }
 };
@@ -54,9 +59,9 @@ const getExpenses = async (req, res) => {
     });
   } catch (error) {
     console.error("Get Expenses Error:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       message: error.message,
-      error: error.message 
+      error: error.message,
     });
   }
 };
@@ -73,7 +78,9 @@ const deleteExpense = async (req, res) => {
     }
 
     if (expense.userId !== userId) {
-      return res.status(403).json({ message: "Not authorized to delete this expense" });
+      return res
+        .status(403)
+        .json({ message: "Not authorized to delete this expense" });
     }
 
     const deletedExpense = await expense.destroy({
@@ -102,7 +109,9 @@ const updateExpense = async (req, res) => {
     }
 
     if (expense.userId !== userId) {
-      return res.status(403).json({ message: "Not authorized to update this expense" });
+      return res
+        .status(403)
+        .json({ message: "Not authorized to update this expense" });
     }
 
     expense.amount = amount;

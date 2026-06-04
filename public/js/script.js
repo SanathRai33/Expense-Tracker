@@ -57,6 +57,7 @@ const getExpenses = async () => {
       `;
 
       expenseList.appendChild(li);
+    
     });
   } catch (error) {
     console.error(error);

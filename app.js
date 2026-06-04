@@ -16,7 +16,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// View routes (should come before static files)
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "views", "index.html"));
 });
@@ -29,14 +28,13 @@ app.get("/login", (req, res) => {
   res.sendFile(path.join(__dirname, "views", "login.html"));
 });
 
-// Static files (after route handlers)
 app.use(express.static("public"));
 
 app.use("/api/users", userRoutes);
 app.use("/api/expenses", expenseRoutes);
 app.use("/api/leaderboard", leaderboardRoutes);
 
-sequelize.sync()
+sequelize.sync({ alter: true })
 .then(() => {
   app.listen(5000, () => {
     console.log("Server Running on Port 5000");

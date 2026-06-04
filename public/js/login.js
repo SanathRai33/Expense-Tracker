@@ -15,8 +15,6 @@ const handleLogin = async (e) => {
     message.textContent = response.data.message;
     message.className = "success";
 
-    console.log("Received Entire Response:", response.data);
-
     localStorage.setItem("token", response.data.token);
 
     window.location.href = "/";
