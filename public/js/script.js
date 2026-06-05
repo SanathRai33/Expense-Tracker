@@ -53,19 +53,46 @@ const getExpenses = async () => {
       const li = document.createElement("li");
 
       li.innerHTML = `
+      <div class="expense-info">
         <strong>₹${expense.amount}</strong>
         - ${expense.description}
         - ${expense.category}
         - ${new Date(expense.date).toLocaleDateString()}
+      </div>
+
+        <button class="delete-btn" data-id="${expense.id}">Delete</button>
       `;
 
+      li.querySelector(".delete-btn").addEventListener("click", () => {
+        deleteExpense(expense.id);
+      });
+
       expenseList.appendChild(li);
-    
     });
   } catch (error) {
     console.error(error);
 
     alert(error.response?.data?.message || "Failed to fetch expenses");
+  }
+};
+
+const deleteExpense = async (id) => {
+  const token = localStorage.getItem("token");
+
+  try {
+    const response = await axios.delete(`/api/expenses/${id}`, {
+      headers: {
+        Authorization: token,
+      },
+    });
+
+    alert(response.data.message);
+
+    getExpenses();
+  } catch (error) {
+    console.error(error);
+
+    alert(error.response?.data?.message || "Failed to delete expense");
   }
 };
 
@@ -102,30 +129,21 @@ const showLeaderboard = async () => {
 
 const suggestCategory = async () => {
   try {
-    const description =
-      descriptionInput.value.trim();
+    const description = descriptionInput.value.trim();
 
     if (!description) {
-      return alert(
-        "Enter description first"
-      );
+      return alert("Enter description first");
     }
 
-    const response = await axios.post(
-      "/api/ai/categorize",
-      {
-        description,
-      }
-    );
+    const response = await axios.post("/api/ai/categorize", {
+      description,
+    });
 
-    categorySelect.value =
-      response.data.category;
+    categorySelect.value = response.data.category;
   } catch (error) {
     console.error(error);
 
-    alert(
-      "Failed to get AI suggestion"
-    );
+    alert("Failed to get AI suggestion");
   }
 };
 

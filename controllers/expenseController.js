@@ -1,40 +1,44 @@
 const Expense = require("../models/expenseModel");
 const User = require("../models/userModel");
+const sequelize = require("../utils/db-connection");
 
 const addExpense = async (req, res) => {
   try {
-    const { amount, description, category, date } = req.body;
-    const userId = req.user.id;
+    const transaction = await sequelize.transaction();
 
-    const user = await User.findByPk(userId);
-    if (!user) {
-      return res.status(404).json({
-        message: "User not found. Please log in again.",
-      });
-    }
-
-    const expense = await Expense.create({
-      amount,
-      description,
-      category,
-      date,
-      userId,
-    });
-
-    const totalExpenses = await User.update(
-      { totalExpense: user.totalExpense + parseFloat(amount) },
-      { where: { id: userId } },
+    const expense = await Expense.create(
+      {
+        amount,
+        description,
+        category,
+        userId,
+      },
+      {
+        transaction,
+      },
     );
 
+    await User.update(
+      {
+        totalExpense: Sequelize.literal(`totalExpense + ${amount}`),
+      },
+      {
+        where: { id: userId },
+        transaction,
+      },
+    );
+
+    await transaction.commit();
+
     res.status(201).json({
-      message: "Expense added successfully",
+      message: "Expense Added",
       expense,
     });
   } catch (error) {
-    console.error("Add Expense Error:", error);
+    await transaction.rollback();
+
     res.status(500).json({
       message: error.message,
-      error: error.message,
     });
   }
 };
@@ -67,32 +71,38 @@ const getExpenses = async (req, res) => {
 };
 
 const deleteExpense = async (req, res) => {
+  const transaction = await sequelize.transaction();
+
   try {
     const { id } = req.params;
-    const userId = req.user.id;
 
-    const expense = await Expense.findByPk(id);
+    const expense = await Expense.findByPk(id, {
+      transaction,
+    });
 
     if (!expense) {
-      return res.status(404).json({ message: "Expense not found" });
+      await transaction.rollback();
+
+      return res.status(404).json({
+        message: "Expense not found",
+      });
     }
 
-    if (expense.userId !== userId) {
-      return res
-        .status(403)
-        .json({ message: "Not authorized to delete this expense" });
-    }
-
-    const deletedExpense = await expense.destroy({
-      where: { id },
+    await expense.destroy({
+      transaction,
     });
+
+    await transaction.commit();
 
     res.status(200).json({
       message: "Expense deleted successfully",
-      deletedExpense,
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    await transaction.rollback();
+
+    res.status(500).json({
+      message: error.message,
+    });
   }
 };
 

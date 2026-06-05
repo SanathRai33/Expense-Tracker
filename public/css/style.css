@@ -101,6 +101,17 @@ body {
   gap: 12px;
 }
 
+#expense-list li {
+  background: #ffffff;
+  padding: 8px 15px;
+  border-radius: 10px;
+  border-left: 5px solid #2c5750;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .expense-card {
   background: white;
   padding: 15px;
@@ -240,6 +251,22 @@ body {
 
 .category-container #ai-category-btn:hover {
   background: linear-gradient(135deg, #357ae8, #8a5bbf, #c14d63);
+}
+
+#expense-list .delete-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 8px;
+  background: #e74c3c;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#expense-list .delete-btn:hover {
+  background: #c0392b;
 }
 
 /* Tablet */
