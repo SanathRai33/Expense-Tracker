@@ -9,6 +9,7 @@ const userRoutes = require("./routes/userRoutes");
 const expenseRoutes = require("./routes/expenseRoutes");
 const leaderboardRoutes = require("./routes/leaderboardRoutes");
 const aiRoutes = require("./routes/aiRoutes");
+const passwordRoutes = require("./routes/passwordRoutes");
 
 require("./models");
 
@@ -29,12 +30,18 @@ app.get("/login", (req, res) => {
   res.sendFile(path.join(__dirname, "views", "login.html"));
 });
 
+app.get("/reset", (req, res) => {
+  res.sendFile(path.join(__dirname, "views", "reset.html"));
+});
+
 app.use(express.static("public"));
 
 app.use("/api/users", userRoutes);
 app.use("/api/expenses", expenseRoutes);
 app.use("/api/leaderboard", leaderboardRoutes);
 app.use("/api/ai", aiRoutes);
+app.use("/api/password", passwordRoutes);
+
 
 sequelize.sync({ alter: true })
 .then(() => {
