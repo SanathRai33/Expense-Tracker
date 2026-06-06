@@ -1,5 +1,9 @@
+const path = require("path");
+const bcrypt = require("bcrypt");
+const { v4: uuidv4 } = require("uuid");
 const brevo = require("@getbrevo/brevo");
 const User = require("../models/userModel");
+const ForgotPasswordRequest = require("../models/forgotPasswordRequestModel");
 
 const forgotPassword = async (req, res) => {
   try {
@@ -15,13 +19,22 @@ const forgotPassword = async (req, res) => {
       });
     }
 
-    const apiInstance =
-      new brevo.TransactionalEmailsApi();
+    const requestId = uuidv4();
+
+    await ForgotPasswordRequest.create({
+      id: requestId,
+      userId: user.id,
+      isActive: true,
+    });
+
+    const apiInstance = new brevo.TransactionalEmailsApi();
 
     apiInstance.setApiKey(
       brevo.TransactionalEmailsApiApiKeys.apiKey,
-      process.env.BREVO_API_KEY
+      process.env.BREVO_API_KEY,
     );
+
+    const resetUrl = `http://localhost:5000/password/resetpassword/${requestId}`;
 
     await apiInstance.sendTransacEmail({
       sender: {
@@ -33,25 +46,75 @@ const forgotPassword = async (req, res) => {
           email,
         },
       ],
-      subject: "Forgot Password",
+      subject: "Reset Password",
       htmlContent: `
-        <h2>Password Reset Request</h2>
-        <p>This is a test email.</p>
+        <h2>Reset Password</h2>
+
+        <a href="${resetUrl}">
+          Reset Password
+        </a>
       `,
     });
 
     res.status(200).json({
-      message: "Email sent successfully",
+      message: "Reset email sent",
     });
   } catch (error) {
-    console.error(error);
-
     res.status(500).json({
       message: error.message,
     });
   }
 };
 
+const updatePassword = async (req, res) => {
+  try {
+    const { requestId, password } = req.body;
+
+    const request = await ForgotPasswordRequest.findByPk(requestId);
+
+    if (!request || !request.isActive) {
+      return res.status(400).json({
+        message: "Invalid reset link",
+      });
+    }
+
+    const user = await User.findByPk(request.userId);
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    user.password = hashedPassword;
+
+    await user.save();
+
+    request.isActive = false;
+
+    await request.save();
+
+    res.status(200).json({
+      message: "Password updated successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+
+const resetPassword = async (req, res) => {
+  const { id } = req.params;
+
+  const request = await ForgotPasswordRequest.findByPk(id);
+
+  if (!request || !request.isActive) {
+    return res.send("Reset Link Expired");
+  }
+
+  res.sendFile(path.join(__dirname, "../views/resetPassword.html"));
+};
+
 module.exports = {
   forgotPassword,
+  updatePassword,
+  resetPassword
 };

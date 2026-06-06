@@ -34,6 +34,10 @@ app.get("/reset", (req, res) => {
   res.sendFile(path.join(__dirname, "views", "reset.html"));
 });
 
+app.get("/password/resetpassword/:id", (req, res) => {
+  res.sendFile(path.join(__dirname, "views", "resetPassword.html"));
+});
+
 app.use(express.static("public"));
 
 app.use("/api/users", userRoutes);
@@ -42,13 +46,13 @@ app.use("/api/leaderboard", leaderboardRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/password", passwordRoutes);
 
-
-sequelize.sync({ alter: true })
-.then(() => {
-  app.listen(5000, () => {
-    console.log("Server Running on Port 5000");
+sequelize
+  .sync()
+  .then(() => {
+    app.listen(5000, () => {
+      console.log("Server Running on Port 5000");
+    });
+  })
+  .catch((err) => {
+    console.error("Unable to connect to the database:", err);
   });
-})
-.catch((err) => {
-  console.error("Unable to connect to the database:", err);
-});

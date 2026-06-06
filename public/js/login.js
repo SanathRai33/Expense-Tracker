@@ -2,7 +2,7 @@ const loginForm = document.getElementById("loginForm");
 const message = document.getElementById("message");
 const forgotPasswordBtn = document.getElementById("forgot-password-btn");
 const forgotPasswordForm = document.getElementById("forgot-password-form");
-const sendResetMail = document.getElementById("forgot-password-btn");
+const sendResetMail = document.getElementById("send-reset-mail");
 
 const handleLogin = async (e) => {
   e.preventDefault();
@@ -35,7 +35,7 @@ const handleLogin = async (e) => {
 
 const handleForgotPassword = async () => {
   try {
-    const email = document.getElementById("send-reset-mail").value;
+    const email = document.getElementById("forgot-email").value;
 
     const response = await axios.post("/api/password/forgotpassword", {
       email,
@@ -51,7 +51,7 @@ const handleForgotPassword = async () => {
 };
 
 if (sendResetMail) {
-  sendResetMail.addEventListener( "click", handleForgotPassword);
+  sendResetMail.addEventListener("click", handleForgotPassword);
 }
 
 if (loginForm) {
