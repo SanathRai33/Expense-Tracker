@@ -4,6 +4,7 @@ const generateToken = (user) => {
   const payload = {
     id: user.id,
     email: user.email,
+    isPremium: user.isPremium
   };
     const secretKey = process.env.JWT_SECRET;
 

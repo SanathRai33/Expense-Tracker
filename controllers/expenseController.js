@@ -1,10 +1,15 @@
 const Expense = require("../models/expenseModel");
 const User = require("../models/userModel");
 const sequelize = require("../utils/db-connection");
+const { Sequelize } = require('sequelize')
 
 const addExpense = async (req, res) => {
+  const transaction = await sequelize.transaction();
+
   try {
-    const transaction = await sequelize.transaction();
+
+    const { amount, description, category, date } = req.body;
+    const userId = req?.user?.id;
 
     const expense = await Expense.create(
       {
@@ -12,6 +17,7 @@ const addExpense = async (req, res) => {
         description,
         category,
         userId,
+        date
       },
       {
         transaction,

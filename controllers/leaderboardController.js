@@ -4,6 +4,15 @@ const Expense = require("../models/expenseModel");
 
 const getLeaderboard = async (req, res) => {
   try {
+    
+    const isPremium = req?.user?.isPremium;
+
+    if (!isPremium) {
+      return res.status(403).json({
+        message: "This feature is for subscribers only."
+      });
+    }
+
     const result = await User.findAll({
       attributes: ["name", "totalExpense"],
       order: [["totalExpense", "DESC"]],

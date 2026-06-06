@@ -5,13 +5,18 @@ const leaderboardList = document.getElementById("leaderboard-list");
 const aiCategoryBtn = document.getElementById("ai-category-btn");
 const descriptionInput = document.getElementById("description");
 const categorySelect = document.getElementById("category");
+const tabButtons = document.querySelectorAll(".tab-btn");
+
+let currentFilter = "monthly";
+let allExpenses = [];
 
 const addExpense = async (e) => {
-  e.preventDefault();
 
+  e.preventDefault();
   const token = localStorage.getItem("token");
 
   try {
+
     const expense = {
       amount: document.getElementById("amount").value,
       description: document.getElementById("description").value,
@@ -34,7 +39,80 @@ const addExpense = async (e) => {
     console.error(error);
 
     alert(error.response?.data?.message || "Failed to add expense");
+  };
+};
+
+const renderExpenses = (expenses) => {
+  expenseList.innerHTML = "";
+
+  if (expenses.length === 0) {
+    expenseList.innerHTML = `       <tr>         <td colspan="5" style="text-align:center;">
+          No expenses found         </td>       </tr>
+    `;
+    return;
   }
+
+  expenses.forEach((expense) => {
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+  <td>₹${expense.amount}</td>
+  <td>${expense.description}</td>
+  <td>${expense.category}</td>
+  <td>${new Date(expense.date).toLocaleDateString()}</td>
+  <td>
+    <button
+      class="delete-btn"
+      data-id="${expense.id}"
+    >
+      Delete
+    </button>
+  </td>
+`;
+
+    tr.querySelector(".delete-btn").addEventListener("click", () => {
+      deleteExpense(expense.id);
+    });
+
+    expenseList.appendChild(tr);
+  });
+};
+
+const filterExpenses = () => {
+  const today = new Date();
+
+  let filteredExpenses = [];
+
+  if (currentFilter === "daily") {
+    filteredExpenses = allExpenses.filter((expense) => {
+      const expenseDate = new Date(expense.date);
+
+      return expenseDate.toDateString() === today.toDateString();
+    });
+  }
+
+  if (currentFilter === "weekly") {
+    filteredExpenses = allExpenses.filter((expense) => {
+      const expenseDate = new Date(expense.date);
+
+      const diffDays = (today - expenseDate) / (1000 * 60 * 60 * 24);
+
+      return diffDays >= 0 && diffDays < 7;
+    });
+  }
+
+  if (currentFilter === "monthly") {
+    filteredExpenses = allExpenses.filter((expense) => {
+      const expenseDate = new Date(expense.date);
+
+      return (
+        expenseDate.getMonth() === today.getMonth() &&
+        expenseDate.getFullYear() === today.getFullYear()
+      );
+    });
+  }
+
+  renderExpenses(filteredExpenses);
 };
 
 const getExpenses = async () => {
@@ -47,28 +125,9 @@ const getExpenses = async () => {
       },
     });
 
-    expenseList.innerHTML = "";
+    allExpenses = response.data.expenses;
 
-    response.data.expenses.forEach((expense) => {
-      const li = document.createElement("li");
-
-      li.innerHTML = `
-      <div class="expense-info">
-        <strong>₹${expense.amount}</strong>
-        - ${expense.description}
-        - ${expense.category}
-        - ${new Date(expense.date).toLocaleDateString()}
-      </div>
-
-        <button class="delete-btn" data-id="${expense.id}">Delete</button>
-      `;
-
-      li.querySelector(".delete-btn").addEventListener("click", () => {
-        deleteExpense(expense.id);
-      });
-
-      expenseList.appendChild(li);
-    });
+    filterExpenses();
   } catch (error) {
     console.error(error);
 
@@ -98,7 +157,13 @@ const deleteExpense = async (id) => {
 
 const showLeaderboard = async () => {
   try {
-    const response = await axios.get("/api/leaderboard");
+    const token = localStorage.getItem("token");
+
+    const response = await axios.get("/api/leaderboard", {
+      headers: {
+        Authorization: token,
+      },
+    });
 
     const data = response.data.leaderboard;
 
@@ -146,6 +211,20 @@ const suggestCategory = async () => {
     alert("Failed to get AI suggestion");
   }
 };
+
+tabButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    tabButtons.forEach((btn) => {
+      btn.classList.remove("active");
+    });
+
+    button.classList.add("active");
+
+    currentFilter = button.dataset.filter;
+
+    filterExpenses();
+  });
+});
 
 expenseForm.addEventListener("submit", addExpense);
 showLeaderboardBtn.addEventListener("click", showLeaderboard);
