@@ -3,277 +3,267 @@
   padding: 0;
   box-sizing: border-box;
   font-family: "Segoe UI", sans-serif;
-  }
+}
 
 body {
-min-height: 100vh;
-background: #f4f7fa;
-display: flex;
-justify-content: center;
-padding: 40px 20px;
+  min-height: 100vh;
+  background: #f4f7fa;
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
 }
 
 .container {
-width: 100%;
-max-width: 950px;
-display: flex;
-flex-direction: column;
-gap: 24px;
+  width: 100%;
+  max-width: 950px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
 .container h1 {
-text-align: center;
-color: #2c5750;
-font-size: 2.3rem;
-font-weight: 700;
+  text-align: center;
+  color: #2c5750;
+  font-size: 2.3rem;
+  font-weight: 700;
 }
 
 #expense-section {
-display: flex;
-flex-direction: column;
-gap: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
 .expense-card {
-background: #ffffff;
-padding: 30px;
-border-radius: 18px;
-box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
 
 .expense-card h2 {
-text-align: center;
-margin-bottom: 24px;
-color: #222;
-font-size: 2rem;
+  text-align: center;
+  margin-bottom: 24px;
+  color: #222;
+  font-size: 2rem;
 }
 
 .expense-card-form {
-width: 100%;
-max-width: 550px;
-margin: 0 auto;
+  width: 100%;
+  max-width: 550px;
+  margin: 0 auto;
 }
 
 #expense-form {
-display: flex;
-flex-direction: column;
-gap: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
 #expense-form input,
 #expense-form select {
-width: 100%;
-padding: 12px 15px;
-border: 1px solid #d9d9d9;
-border-radius: 8px;
-font-size: 15px;
-outline: none;
-transition: 0.3s ease;
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+  font-size: 15px;
+  outline: none;
+  transition: 0.3s ease;
 }
 
 #expense-form input:focus,
 #expense-form select:focus {
-border-color: #2c5750;
-box-shadow: 0 0 5px rgba(44, 87, 80, 0.2);
+  border-color: #2c5750;
+  box-shadow: 0 0 5px rgba(44, 87, 80, 0.2);
 }
 
 #expense-form button {
-padding: 12px;
-border: none;
-border-radius: 8px;
-background: #2c5750;
-color: white;
-font-size: 15px;
-font-weight: 600;
-cursor: pointer;
-transition: 0.3s ease;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: #2c5750;
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s ease;
 }
 
 #expense-form button:hover {
-background: #23463f;
+  background: #23463f;
 }
 
 .category-container {
-display: flex;
-gap: 10px;
+  display: flex;
+  gap: 10px;
 }
 
 .category-container select {
-flex: 1;
+  flex: 1;
 }
 
 #ai-category-btn {
-background: linear-gradient(
-135deg,
-#4285f4,
-#9b72cb,
-#d96570
-) !important;
+  background: linear-gradient(135deg, #4285f4, #9b72cb, #d96570) !important;
 }
 
 #ai-category-btn:hover {
-background: linear-gradient(
-135deg,
-#357ae8,
-#8a5bbf,
-#c14d63
-) !important;
+  background: linear-gradient(135deg, #357ae8, #8a5bbf, #c14d63) !important;
 }
 
 .section-title {
-text-align: center;
-margin-bottom: 24px;
-color: #333;
-font-size: 1.8rem;
-font-weight: 700;
+  text-align: center;
+  margin-bottom: 24px;
+  color: #333;
+  font-size: 1.8rem;
+  font-weight: 700;
 }
 
 .expense-table-card {
-width: 100%;
+  width: 100%;
 }
 
 .report-tabs {
-display: flex;
-justify-content: center;
-gap: 12px;
-margin-bottom: 24px;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 24px;
 }
 
 .tab-btn {
-border: none;
-padding: 10px 24px;
-border-radius: 999px;
-background: #edf1f5;
-color: #666;
-font-size: 14px;
-font-weight: 600;
-cursor: pointer;
-transition: 0.3s ease;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 999px;
+  background: #edf1f5;
+  color: #666;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s ease;
 }
 
 .tab-btn:hover {
-background: #dfe7ef;
+  background: #dfe7ef;
 }
 
 .tab-btn.active {
-background: #2c5750;
-color: white;
-box-shadow: 0 4px 12px rgba(44, 87, 80, 0.25);
+  background: #2c5750;
+  color: white;
+  box-shadow: 0 4px 12px rgba(44, 87, 80, 0.25);
 }
 
 #expense-table {
-width: 100%;
-border-collapse: collapse;
-overflow: hidden;
+  width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
 }
 
 #expense-table th {
-background: #2c5750;
-color: white;
-padding: 16px;
-text-align: left;
+  background: #2c5750;
+  color: white;
+  padding: 16px;
+  text-align: left;
 }
 
 #expense-table td {
-padding: 16px;
-border-bottom: 1px solid #e5e7eb;
+  padding: 16px;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 #expense-table tbody tr:nth-child(even) {
-background: #f8fafc;
+  background: #f8fafc;
 }
 
 #expense-table tbody tr:hover {
-background: #edf7f5;
+  background: #edf7f5;
 }
 
 .delete-btn {
-padding: 7px 14px;
-border: none;
-border-radius: 6px;
-background: #e74c3c;
-color: white;
-font-size: 14px;
-cursor: pointer;
-transition: 0.3s ease;
+  padding: 7px 14px;
+  border: none;
+  border-radius: 6px;
+  background: #e74c3c;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.3s ease;
 }
 
 .delete-btn:hover {
-background: #c0392b;
+  background: #c0392b;
 }
 
 #leaderboard-section {
-background: #ffffff;
-padding: 30px;
-border-radius: 18px;
-box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
 
 #show-leaderboard {
-display: block;
-margin: 0 auto 20px;
-padding: 10px 20px;
-border: none;
-border-radius: 8px;
-background: #2c5750;
-color: white;
-font-size: 15px;
-font-weight: 600;
-cursor: pointer;
+  display: block;
+  margin: 0 auto 20px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background: #2c5750;
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
 }
 
 #show-leaderboard:hover {
-background: #23463f;
+  background: #23463f;
 }
 
 #leaderboard-list {
-list-style: none;
-display: flex;
-flex-direction: column;
-gap: 10px;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .leaderboard-item {
-display: flex;
-align-items: center;
-gap: 12px;
-padding: 10px 18px;
-border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 18px;
+  border-radius: 10px;
 }
 
 .leaderboard-item:nth-child(odd) {
-background: #ffffff;
+  background: #ffffff;
 }
 
 .leaderboard-item:nth-child(even) {
-background: #eaf6ff;
+  background: #eaf6ff;
 }
 
 .rank {
-min-width: 40px;
-font-size: 18px;
-font-weight: 700;
-color: #2c5750;
+  min-width: 40px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #2c5750;
 }
 
 .leaderboard-info {
-width: 100%;
-display: flex;
-justify-content: space-between;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
 }
 
 .name {
-font-weight: 600;
-color: #333;
+  font-weight: 600;
+  color: #333;
 }
 
 .expense {
-font-weight: 700;
-color: #2c5750;
+  font-weight: 700;
+  color: #2c5750;
 }
 
 .leaderboard-item:hover {
-box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
 }
 
 .pagination {
@@ -302,51 +292,63 @@ box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
   font-weight: 600;
 }
 
+.page-count {
+  margin-left: 10px;
+  font-weight: 600;
+}
+
+.page-count select {
+  width: 36px;
+  border: 1px solid black;
+  border-radius: 5px;
+  font-weight: 600;
+  font-size: 16px;
+}
+
 /*  */
 @media (max-width: 768px) {
-.container h1 {
-font-size: 2rem;
-}
+  .container h1 {
+    font-size: 2rem;
+  }
 
-.expense-card {
-padding: 24px;
-}
+  .expense-card {
+    padding: 24px;
+  }
 
-#expense-table {
-display: block;
-overflow-x: auto;
-white-space: nowrap;
+  #expense-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
 }
-}
-
 
 /*  */
 @media (max-width: 480px) {
-body {
-padding: 20px 12px;
-}
+  body {
+    padding: 20px 12px;
+  }
 
-.container h1 {
-font-size: 1.7rem;
-}
+  .container h1 {
+    font-size: 1.7rem;
+  }
 
-.expense-card {
-padding: 18px;
-}
+  .expense-card {
+    padding: 18px;
+  }
 
-.expense-card h2 {
-font-size: 1.5rem;
-}
+  .expense-card h2 {
+    font-size: 1.5rem;
+  }
 
-.category-container {
-flex-direction: column;
-}
+  .category-container {
+    flex-direction: column;
+  }
 
-.report-tabs {
-flex-wrap: wrap;
-}
+  .report-tabs {
+    flex-wrap: wrap;
+  }
 
-.tab-btn {
-width: 100%;
-}
+  .tab-btn {
+    width: 100%;
+  }
 }

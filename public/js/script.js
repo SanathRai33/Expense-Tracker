@@ -9,11 +9,14 @@ const tabButtons = document.querySelectorAll(".tab-btn");
 const prevPageBtn = document.getElementById("prev-page");
 const nextPageBtn = document.getElementById("next-page");
 const pageInfo = document.getElementById("page-info");
+const rowCount = document.getElementById("row-count");
+const totalExpenses = document.getElementById("total-expenses");
 
 let currentFilter = "monthly";
 let allExpenses = [];
 let currentPage = 1;
 let totalPages = 1;
+let rowsPerPage = 10;
 
 const addExpense = async (e) => {
   e.preventDefault();
@@ -122,18 +125,22 @@ const getExpenses = async () => {
   const token = localStorage.getItem("token");
 
   try {
-    const response = await axios.get(`/api/expenses?page=${currentPage}`, {
-      headers: {
-        Authorization: token,
+    const response = await axios.get(`/api/expenses?page=${currentPage}&limit=${rowsPerPage}`,
+      {
+        headers: {
+          Authorization: token,
+        },
       },
-    });
+    );
 
     allExpenses = response.data.expenses;
     totalPages = response.data.totalPages;
     pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
     prevPageBtn.disabled = currentPage === 1;
     nextPageBtn.disabled = currentPage === totalPages;
-
+    
+console.log(allExpenses);
+console.log(currentFilter);
     filterExpenses();
   } catch (error) {
     console.error(error);
@@ -248,6 +255,12 @@ nextPageBtn.addEventListener("click", () => {
     currentPage++;
     getExpenses();
   }
+});
+
+rowCount.addEventListener("change", (e) => {
+  rowsPerPage = Number(e.target.value);
+  currentPage = 1;
+  getExpenses();
 });
 
 window.addEventListener("DOMContentLoaded", getExpenses);

@@ -52,7 +52,7 @@ const getExpenses = async (req, res) => {
   try {
     const userId = req.user.id;
     const page = Number(req.query.page) || 1;
-    const limit = 10;
+    const limit = Number(req.query.limit) || 10;
     const offset = (page - 1) * limit;
 
     const { count, rows } = await Expense.findAndCountAll({
@@ -67,11 +67,6 @@ const getExpenses = async (req, res) => {
       currentPage: page,
       totalPages: Math.ceil(count / limit),
       totalExpenses: count,
-    });
-
-    res.status(200).json({
-      message: "Expenses retrieved successfully",
-      expenses,
     });
   } catch (error) {
     console.error("Get Expenses Error:", error);
