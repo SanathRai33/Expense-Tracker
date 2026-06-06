@@ -276,6 +276,33 @@ color: #2c5750;
 box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
 }
 
+.pagination {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+}
+
+.pagination button {
+  border: none;
+  background: #2c5750;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.pagination button:disabled {
+  background: #cbd5e1;
+  cursor: not-allowed;
+}
+
+#page-info {
+  font-weight: 600;
+}
+
+/*  */
 @media (max-width: 768px) {
 .container h1 {
 font-size: 2rem;
@@ -292,6 +319,8 @@ white-space: nowrap;
 }
 }
 
+
+/*  */
 @media (max-width: 480px) {
 body {
 padding: 20px 12px;

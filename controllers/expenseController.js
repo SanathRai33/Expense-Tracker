@@ -1,13 +1,12 @@
 const Expense = require("../models/expenseModel");
 const User = require("../models/userModel");
 const sequelize = require("../utils/db-connection");
-const { Sequelize } = require('sequelize')
+const { Sequelize } = require("sequelize");
 
 const addExpense = async (req, res) => {
   const transaction = await sequelize.transaction();
 
   try {
-
     const { amount, description, category, date } = req.body;
     const userId = req?.user?.id;
 
@@ -17,7 +16,7 @@ const addExpense = async (req, res) => {
         description,
         category,
         userId,
-        date
+        date,
       },
       {
         transaction,
@@ -52,16 +51,23 @@ const addExpense = async (req, res) => {
 const getExpenses = async (req, res) => {
   try {
     const userId = req.user.id;
-    const expenses = await Expense.findAll({
+    const page = Number(req.query.page) || 1;
+    const limit = 10;
+    const offset = (page - 1) * limit;
+
+    const { count, rows } = await Expense.findAndCountAll({
       where: { userId },
+      order: [["date", "DESC"]],
+      limit,
+      offset,
     });
 
-    // if (expenses.length === 0) {
-    //   return res.status(404).json({
-    //     message: "No expenses found",
-    //     expenses: [],
-    //   });
-    // }
+    res.status(200).json({
+      expenses: rows,
+      currentPage: page,
+      totalPages: Math.ceil(count / limit),
+      totalExpenses: count,
+    });
 
     res.status(200).json({
       message: "Expenses retrieved successfully",

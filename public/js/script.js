@@ -6,17 +6,20 @@ const aiCategoryBtn = document.getElementById("ai-category-btn");
 const descriptionInput = document.getElementById("description");
 const categorySelect = document.getElementById("category");
 const tabButtons = document.querySelectorAll(".tab-btn");
+const prevPageBtn = document.getElementById("prev-page");
+const nextPageBtn = document.getElementById("next-page");
+const pageInfo = document.getElementById("page-info");
 
 let currentFilter = "monthly";
 let allExpenses = [];
+let currentPage = 1;
+let totalPages = 1;
 
 const addExpense = async (e) => {
-
   e.preventDefault();
   const token = localStorage.getItem("token");
 
   try {
-
     const expense = {
       amount: document.getElementById("amount").value,
       description: document.getElementById("description").value,
@@ -39,7 +42,7 @@ const addExpense = async (e) => {
     console.error(error);
 
     alert(error.response?.data?.message || "Failed to add expense");
-  };
+  }
 };
 
 const renderExpenses = (expenses) => {
@@ -119,13 +122,17 @@ const getExpenses = async () => {
   const token = localStorage.getItem("token");
 
   try {
-    const response = await axios.get("/api/expenses", {
+    const response = await axios.get(`/api/expenses?page=${currentPage}`, {
       headers: {
         Authorization: token,
       },
     });
 
     allExpenses = response.data.expenses;
+    totalPages = response.data.totalPages;
+    pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+    prevPageBtn.disabled = currentPage === 1;
+    nextPageBtn.disabled = currentPage === totalPages;
 
     filterExpenses();
   } catch (error) {
@@ -229,5 +236,18 @@ tabButtons.forEach((button) => {
 expenseForm.addEventListener("submit", addExpense);
 showLeaderboardBtn.addEventListener("click", showLeaderboard);
 aiCategoryBtn.addEventListener("click", suggestCategory);
+prevPageBtn.addEventListener("click", () => {
+  if (currentPage > 1) {
+    currentPage--;
+    getExpenses();
+  }
+});
+
+nextPageBtn.addEventListener("click", () => {
+  if (currentPage < totalPages) {
+    currentPage++;
+    getExpenses();
+  }
+});
 
 window.addEventListener("DOMContentLoaded", getExpenses);
