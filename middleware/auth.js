@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const logger = require("../utils/logger");
 
 const auth = (req, res, next) => {
   try {
@@ -6,6 +7,7 @@ const auth = (req, res, next) => {
     const token = req.header("Authorization");
 
     if (!token) {
+      logger.warn("Access attempt without token");
       return res.status(401).json({
         message: "Access denied. No token provided",
       });
@@ -26,6 +28,7 @@ const auth = (req, res, next) => {
     next();
 
   } catch (error) {
+    logger.warn(`Invalid token attempted: ${error.message}`);
     res.status(401).json({
       message: "Invalid Token",
     });

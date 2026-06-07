@@ -4,6 +4,7 @@ const express = require("express");
 const cors = require("cors");
 const path = require("node:path");
 const sequelize = require("./utils/db-connection");
+const logger = require("./utils/logger");
 
 const userRoutes = require("./routes/userRoutes");
 const expenseRoutes = require("./routes/expenseRoutes");
@@ -46,13 +47,23 @@ app.use("/api/leaderboard", leaderboardRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/password", passwordRoutes);
 
+// Global error handling middleware (must be last)
+app.use((err, req, res, next) => {
+  logger.error(`${req.method} ${req.path}`, err);
+  res.status(err.status || 500).json({
+    message: process.env.NODE_ENV === 'production' ? 'Internal Server Error' : err.message,
+  });
+});
+
 sequelize
   .sync()
   .then(() => {
-    app.listen(5000, () => {
-      console.log("Server Running on Port 5000");
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => {
+      logger.info(`Server Running on Port ${PORT}`);
     });
   })
   .catch((err) => {
-    console.error("Unable to connect to the database:", err);
+    logger.error("Unable to connect to the database:", err);
+    process.exit(1);
   });

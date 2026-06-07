@@ -2,6 +2,7 @@ const Expense = require("../models/expenseModel");
 const User = require("../models/userModel");
 const sequelize = require("../utils/db-connection");
 const { Sequelize } = require("sequelize");
+const logger = require("../utils/logger");
 
 const addExpense = async (req, res) => {
   const transaction = await sequelize.transaction();
@@ -35,6 +36,7 @@ const addExpense = async (req, res) => {
 
     await transaction.commit();
 
+    logger.info(`Expense added by user ${userId}: Amount ${amount}, Category ${category}`);
     res.status(201).json({
       message: "Expense Added",
       expense,
@@ -42,6 +44,7 @@ const addExpense = async (req, res) => {
   } catch (error) {
     await transaction.rollback();
 
+    logger.error(`Error adding expense for user ${req?.user?.id}`, error);
     res.status(500).json({
       message: error.message,
     });
@@ -69,7 +72,7 @@ const getExpenses = async (req, res) => {
       totalExpenses: count,
     });
   } catch (error) {
-    console.error("Get Expenses Error:", error);
+    logger.error(`Get Expenses Error for user ${req.user.id}:`, error);
     res.status(500).json({
       message: error.message,
       error: error.message,
@@ -101,12 +104,14 @@ const deleteExpense = async (req, res) => {
 
     await transaction.commit();
 
+    logger.info(`Expense deleted: ID ${id} by user ${req.user.id}`);
     res.status(200).json({
       message: "Expense deleted successfully",
     });
   } catch (error) {
     await transaction.rollback();
 
+    logger.error(`Error deleting expense ${req.params.id}:`, error);
     res.status(500).json({
       message: error.message,
     });
@@ -126,6 +131,7 @@ const updateExpense = async (req, res) => {
     }
 
     if (expense.userId !== userId) {
+      logger.warn(`Unauthorized update attempt for expense ${id} by user ${userId}`);
       return res
         .status(403)
         .json({ message: "Not authorized to update this expense" });
@@ -137,11 +143,13 @@ const updateExpense = async (req, res) => {
 
     const updatedExpense = await expense.save();
 
+    logger.info(`Expense updated: ID ${id} by user ${userId}`);
     res.status(200).json({
       message: "Expense updated successfully",
       updatedExpense,
     });
   } catch (error) {
+    logger.error(`Error updating expense ${req.params.id}:`, error);
     res.status(500).json({ error: error.message });
   }
 };

@@ -1,6 +1,7 @@
 const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const generateToken = require("../utils/token-generator");
+const logger = require("../utils/logger");
 
 const signup = async (req, res) => {
   try {
@@ -11,6 +12,7 @@ const signup = async (req, res) => {
     });
 
     if (existingUser) {
+      logger.warn(`Signup attempt with existing email: ${email}`);
       return res.status(400).json({
         message: "Email already exists",
       });
@@ -24,10 +26,12 @@ const signup = async (req, res) => {
       password: hashedPassword,
     });
 
+    logger.info(`New user registered: ${email}`);
     res.status(201).json({
       message: "User Registered Successfully",
     });
   } catch (error) {
+    logger.error(`Error in signup for email: ${req.body.email}`, error);
     res.status(500).json({
       message: error.message,
     });
@@ -45,6 +49,7 @@ const login = async (req, res) => {
         const isPasswordValid = user ? await bcrypt.compare(password, user.password) : false;
 
         if (!isPasswordValid) {
+            logger.warn(`Failed login attempt for email: ${email}`);
             return res.status(401).json({
                 message: "Invalid email or password",
             });
@@ -52,6 +57,7 @@ const login = async (req, res) => {
 
         const token = generateToken(user);
 
+        logger.info(`User logged in: ${email}`);
         res.status(200).json({
             message: "Login Successful",
             user: {
@@ -62,6 +68,7 @@ const login = async (req, res) => {
             token,
         });
     } catch (error) {
+        logger.error(`Error in login for email: ${req.body.email}`, error);
         res.status(500).json({
             message: error.message,
         });
