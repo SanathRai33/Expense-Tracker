@@ -11,6 +11,7 @@ const nextPageBtn = document.getElementById("next-page");
 const pageInfo = document.getElementById("page-info");
 const rowCount = document.getElementById("row-count");
 const totalExpenses = document.getElementById("total-expenses");
+const downloadBtn = document.getElementById("download-expenses");
 
 let currentFilter = "monthly";
 let allExpenses = [];
@@ -52,9 +53,14 @@ const renderExpenses = (expenses) => {
   expenseList.innerHTML = "";
 
   if (expenses.length === 0) {
-    expenseList.innerHTML = `       <tr>         <td colspan="5" style="text-align:center;">
-          No expenses found         </td>       </tr>
+    expenseList.innerHTML = `
+      <tr>
+        <td colspan="5" style="text-align:center;">
+          No expenses found
+        </td>
+      </tr>
     `;
+
     return;
   }
 
@@ -62,22 +68,25 @@ const renderExpenses = (expenses) => {
     const tr = document.createElement("tr");
 
     tr.innerHTML = `
-  <td>₹${expense.amount}</td>
-  <td>${expense.description}</td>
-  <td>${expense.category}</td>
-  <td>${new Date(expense.date).toLocaleDateString()}</td>
-  <td>
-    <button
-      class="delete-btn"
-      data-id="${expense.id}"
-    >
-      Delete
-    </button>
-  </td>
-`;
+      <td>₹${expense.amount}</td>
+      <td>${expense.description}</td>
+      <td>${expense.category}</td>
+      <td>
+        ${new Date(expense.date).toLocaleDateString()}
+      </td>
+
+      <td>
+        <button
+          class="delete-btn"
+          data-id="${expense._id}"
+        >
+          Delete
+        </button>
+      </td>
+    `;
 
     tr.querySelector(".delete-btn").addEventListener("click", () => {
-      deleteExpense(expense.id);
+      deleteExpense(expense._id);
     });
 
     expenseList.appendChild(tr);
@@ -125,7 +134,8 @@ const getExpenses = async () => {
   const token = localStorage.getItem("token");
 
   try {
-    const response = await axios.get(`/api/expenses?page=${currentPage}&limit=${rowsPerPage}`,
+    const response = await axios.get(
+      `/api/expenses?page=${currentPage}&limit=${rowsPerPage}`,
       {
         headers: {
           Authorization: token,
@@ -138,9 +148,9 @@ const getExpenses = async () => {
     pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
     prevPageBtn.disabled = currentPage === 1;
     nextPageBtn.disabled = currentPage === totalPages;
-    
-console.log(allExpenses);
-console.log(currentFilter);
+
+    console.log(allExpenses);
+    console.log(currentFilter);
     filterExpenses();
   } catch (error) {
     console.error(error);
@@ -208,21 +218,49 @@ const showLeaderboard = async () => {
 
 const suggestCategory = async () => {
   try {
+    const token = localStorage.getItem("token");
+
     const description = descriptionInput.value.trim();
 
     if (!description) {
       return alert("Enter description first");
     }
 
-    const response = await axios.post("/api/ai/categorize", {
-      description,
-    });
+    const response = await axios.post(
+      "/api/ai/categorize",
+      {
+        description,
+      },
+      {
+        headers: {
+          Authorization: token,
+        },
+      },
+    );
 
     categorySelect.value = response.data.category;
   } catch (error) {
     console.error(error);
 
-    alert("Failed to get AI suggestion");
+    alert(error.response?.data?.message || "Failed to get AI suggestion");
+  }
+};
+
+const downloadExpenses = async () => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const response = await axios.get("/api/expenses/download", {
+      headers: {
+        Authorization: token,
+      },
+    });
+
+    window.open(response.data.fileUrl, "_blank");
+  } catch (error) {
+    console.error(error);
+
+    alert("Failed to download expenses");
   }
 };
 
@@ -262,5 +300,7 @@ rowCount.addEventListener("change", (e) => {
   currentPage = 1;
   getExpenses();
 });
+
+downloadBtn.addEventListener("click", downloadExpenses);
 
 window.addEventListener("DOMContentLoaded", getExpenses);

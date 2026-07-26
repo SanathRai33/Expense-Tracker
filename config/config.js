@@ -1,28 +1,26 @@
-require('dotenv').config();
+const mongoose = require("mongoose");
 
-module.exports = {
-  development: {
-    username: process.env.DB_USER || 'root',
-    password: process.env.DB_PASSWORD || '',
-    database: process.env.DB_NAME || 'expense_tracker',
-    host: process.env.DB_HOST || '127.0.0.1',
-    port: process.env.DB_PORT || 3306,
-    dialect: 'mysql'
-  },
-  test: {
-    username: process.env.DB_USER || 'root',
-    password: process.env.DB_PASSWORD || '',
-    database: process.env.DB_NAME || 'expense_tracker_test',
-    host: process.env.DB_HOST || '127.0.0.1',
-    port: process.env.DB_PORT || 3306,
-    dialect: 'mysql'
-  },
-  production: {
-    username: process.env.DB_USER || 'root',
-    password: process.env.DB_PASSWORD || '',
-    database: process.env.DB_NAME || 'expense_tracker',
-    host: process.env.DB_HOST || '127.0.0.1',
-    port: process.env.DB_PORT || 3306,
-    dialect: 'mysql'
+const connectDB = async () => {
+  try {
+    const mongoURI = process.env.MONGODB_URI;
+
+    if (!mongoURI) {
+      throw new Error(
+        "MONGODB_URI is not defined in environment variables"
+      );
+    }
+
+    await mongoose.connect(mongoURI);
+
+    console.log("MongoDB connected successfully");
+    console.log(`Database: ${mongoose.connection.name}`);
+  } catch (error) {
+    console.error(
+      `MongoDB connection error: ${error.message}`
+    );
+
+    throw error;
   }
 };
+
+module.exports = connectDB;

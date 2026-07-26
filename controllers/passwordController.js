@@ -10,8 +10,14 @@ const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
 
+    if (!email) {
+      return res.status(400).json({
+        message: "Email is required",
+      });
+    }
+
     const user = await User.findOne({
-      where: { email },
+      email: email.toLowerCase(),
     });
 
     if (!user) {
@@ -23,8 +29,8 @@ const forgotPassword = async (req, res) => {
     const requestId = uuidv4();
 
     await ForgotPasswordRequest.create({
-      id: requestId,
-      userId: user.id,
+      requestId,
+      userId: user._id,
       isActive: true,
     });
 
@@ -35,20 +41,25 @@ const forgotPassword = async (req, res) => {
       process.env.BREVO_API_KEY,
     );
 
-    const appBaseUrl = process.env.APP_BASE_URL || 'http://localhost:5000';
+    const appBaseUrl = process.env.APP_BASE_URL || "http://localhost:5000";
+
     const resetUrl = `${appBaseUrl}/password/resetpassword/${requestId}`;
 
     await apiInstance.sendTransacEmail({
       sender: {
         email: process.env.BREVO_SENDER_EMAIL,
+
         name: "Expense Tracker",
       },
+
       to: [
         {
           email,
         },
       ],
+
       subject: "Reset Password",
+
       htmlContent: `
         <h2>Reset Password</h2>
 
@@ -59,6 +70,7 @@ const forgotPassword = async (req, res) => {
     });
 
     logger.info(`Password reset email sent to ${email}`);
+
     res.status(200).json({
       message: "Reset email sent",
     });
@@ -74,16 +86,31 @@ const updatePassword = async (req, res) => {
   try {
     const { requestId, password } = req.body;
 
-    const request = await ForgotPasswordRequest.findByPk(requestId);
+    if (!requestId || !password) {
+      return res.status(400).json({
+        message: "Request ID and password are required",
+      });
+    }
+
+    const request = await ForgotPasswordRequest.findOne({
+      requestId,
+    });
 
     if (!request || !request.isActive) {
       logger.warn(`Invalid reset link attempted: ${requestId}`);
+
       return res.status(400).json({
         message: "Invalid reset link",
       });
     }
 
-    const user = await User.findByPk(request.userId);
+    const user = await User.findById(request.userId);
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -107,12 +134,13 @@ const updatePassword = async (req, res) => {
   }
 };
 
-
 const resetPassword = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const request = await ForgotPasswordRequest.findByPk(id);
+    const request = await ForgotPasswordRequest.findOne({
+      requestId: id,
+    });
 
     if (!request || !request.isActive) {
       logger.warn(`Expired or invalid reset link accessed: ${id}`);
@@ -131,5 +159,5 @@ const resetPassword = async (req, res) => {
 module.exports = {
   forgotPassword,
   updatePassword,
-  resetPassword
+  resetPassword,
 };

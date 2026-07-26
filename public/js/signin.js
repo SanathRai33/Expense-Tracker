@@ -29,7 +29,6 @@ const handleSignup = async (e) => {
   }
 };
 
-
 if (signinForm) {
   signinForm.addEventListener("submit", handleSignup);
 }

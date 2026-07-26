@@ -16,6 +16,7 @@ const suggestCategory = async (req, res) => {
     });
 
     logger.info(`Category suggested for expense: ${description.substring(0, 50)}`);
+    
     res.status(200).json({
       category: response.text.trim(),
     });

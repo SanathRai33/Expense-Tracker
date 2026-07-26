@@ -4,6 +4,8 @@ const router = express.Router();
 
 const { suggestCategory } = require("../controllers/aiController");
 
-router.post("/categorize", suggestCategory);
+const auth = require("../middleware/auth");
+
+router.post("/categorize", auth, suggestCategory);
 
 module.exports = router;
